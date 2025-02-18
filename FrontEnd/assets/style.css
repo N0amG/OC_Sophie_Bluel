@@ -3,13 +3,19 @@
    License: none (public domain)
 */
 
+:root {
+	--main-color: #1D6154;
+	--hover-main-color: #0E2F28;
+	--secondary-color: #B1663C;
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
 small, strike, strong, sub, sup, tt, var,
 b, u, i, center,
-dl, dt, dd, ol, ul, li,
+dl, dt, dd, ol, ul, li, a,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
 article, aside, canvas, details, embed,
@@ -22,6 +28,7 @@ time, mark, audio, video {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
+	scroll-behavior: smooth;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
@@ -30,6 +37,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	background-color: #FFFEF8;
 }
 ol, ul {
 	list-style: none;
@@ -68,7 +76,7 @@ h1{
 	font-family: 'Syne';
 	font-size: 22px;
 	font-weight: 800;
-	color: #B1663C
+	color: var(--secondary-color)
 }
 
 h1 > span {
@@ -95,8 +103,8 @@ nav li {
 	font-size: 1.2em;
 }
 
-li:hover {
-	color: #B1663C;
+li:hover, a:hover {
+	color: var(--secondary-color);
 }
 #introduction {
 	display: flex;
@@ -179,10 +187,31 @@ input[type="submit"]{
 	text-align: center;
 	border-radius: 60px ;
 }
-
+input[type="submit"]:hover {
+	background-color: var(--hover-main-color);
+	cursor: pointer;
+}
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
-	margin: 2em
+	padding: 22px;
+}
+
+a {
+	text-decoration: none;
+	color: #000000;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+#instagram-logo {
+	width: 22px;
+	height: 22px;
+}
+
+#introduction article p {
+	width: 75%;
 }
 
