@@ -9,7 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="./assets/style.css">
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="../assets/login.css">
+    <script type="module" src="../js/main.js" defer></script>
 
 </head>
 
@@ -18,23 +20,28 @@
         <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
         <nav>
             <ul>
-                <li><a href="index.html">projets</a></li>
+                <li><a href="../index.html">projets</a></li>
                 <li><a href="#contact">contact</a></li>
                 <li><a href="#login" class="bold">login</a></li>
-                <li><a href="https://www.instagram.com/"><img src="./assets/icons/instagram.png" id="instagram-logo"
+                <li><a href="https://www.instagram.com/"><img src="../assets/icons/instagram.png" id="instagram-logo"
                             alt="Instagram"></a></li>
             </ul>
         </nav>
     </header>
     <main>
         <section id="login">
-            <h2>Login</h2>
+            <h2>Log In</h2>
             <form action="#" method="post">
-                <label for="username">Nom d'utilisateur</label>
-                <input type="text" name="username" id="username">
-                <label for="password">Mot de passe</label>
-                <input type="password" name="password" id="password">
+                <div>
+                    <label for="username">E-mail</label>
+                    <input type="text" name="username" id="username">
+                </div>
+                <div>
+                    <label for="password">Mot de passe</label>
+                    <input type="password" name="password" id="password">
+                </div>
                 <input type="submit" value="Se connecter">
+                <a href="#" id="forgot-password">Mot de passe oublié</a>
             </form>
         </section>
     </main>
