@@ -13,3 +13,22 @@ export async function getData(endpoint) {
         return null;
     }
 }
+
+export async function sendRequest(endpoint, request) {
+
+    try {
+        const response = await fetch(`${API_URL}/${endpoint}`, request);
+
+        if (!response.ok) {
+            throw new Error('Erreur de connexion');
+        }
+        const data = await response.json();
+        console.log(data);
+        return data;
+
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+
+}

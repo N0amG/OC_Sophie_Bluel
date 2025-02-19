@@ -1,13 +1,14 @@
-import { getData } from "./api.js";
+import { getData } from "./utils/api.js";
 
 console.log("display.js chargé");
 
-// Affichage des projets
+// Récupère les données des projets via l'API
 async function getProjectsData() {
     const data = await getData("works");
     return data;
 }
 
+// Retourne le code HTML d'un projet
 function returnOneProject(project) {
     return `
         <figure>
@@ -17,6 +18,7 @@ function returnOneProject(project) {
     `;
 }
 
+// Retourne le code HTML de tous les projets en fonction de la catégorie
 async function returnAllProjects(category) {
     let projects = await getProjectsData();
     let html = '';
@@ -31,6 +33,8 @@ async function returnAllProjects(category) {
 // Gestions des filtres
 let currentCategory = "Tous";
 
+
+// Génère les boutons de filtres
 function generateFilters() {
     let categories = ["Tous", "Objets", "Appartements", "Hotels & restaurants"];
     const portfolio = document.querySelector("#portfolio-title");
@@ -51,7 +55,7 @@ function generateFilters() {
     portfolio.insertAdjacentElement("afterend", ul);
 }
 
-// Gestion des filtres et de l'affichage
+// Gestion des boutons filtres et de l'affichage des projets en conséquence
 async function displayManager() {
     generateFilters();
     let html = await returnAllProjects(currentCategory);
@@ -69,4 +73,5 @@ async function displayManager() {
     });
 }
 
+// Affiche les projets par défaut
 displayManager();
