@@ -30,9 +30,9 @@ async function returnAllProjects(category) {
     return html;
 }
 
-async function displayProjects(params) {
-    let html = await returnAllProjects(currentCategory);
-    document.querySelector(".gallery").innerHTML = html;
+export async function displayProjects(gallery, category = "Tous") {
+    let html = await returnAllProjects(category);
+    document.querySelector(gallery).innerHTML = html;
 }
 
 // Gestions des filtres
@@ -71,16 +71,13 @@ async function filterManager() {
             filtersButtons.forEach(button => button.classList.remove("active"));
             button.classList.add("active");
             currentCategory = button.textContent;
-            displayProjects();
+            displayProjects(".gallery", currentCategory);
         });
     });
 }
 
-
-
-
-
-function Display() {
+// Affiche la page d'accueil en fonction de la connexion de l'utilisateur
+function display() {
     // Afficher le mode d'édition si l'utilisateur est connecté
     if (localStorage.getItem("authToken")) {
         document.querySelector(".edit-banner").classList.remove("no-display");
@@ -103,5 +100,5 @@ function Display() {
     }
 }
 
-displayProjects();
-Display();
+displayProjects(".gallery");
+display();  
