@@ -30,6 +30,11 @@ async function returnAllProjects(category) {
     return html;
 }
 
+async function displayProjects(params) {
+    let html = await returnAllProjects(currentCategory);
+    document.querySelector(".gallery").innerHTML = html;
+}
+
 // Gestions des filtres
 let currentCategory = "Tous";
 
@@ -37,7 +42,8 @@ let currentCategory = "Tous";
 // Génère les boutons de filtres
 function generateFilters() {
     let categories = ["Tous", "Objets", "Appartements", "Hotels & restaurants"];
-    const portfolio = document.querySelector("#portfolio-title");
+    const portfolio = document.querySelector("#portfolio");
+    const gallery = document.querySelector(".gallery");
     let ul = document.createElement("ul");
     ul.id = "filters";
     let html = '';
@@ -52,26 +58,50 @@ function generateFilters() {
         `;
     });
     ul.innerHTML = html;
-    portfolio.insertAdjacentElement("afterend", ul);
+    portfolio.insertBefore(ul, gallery);
 }
 
 // Gestion des boutons filtres et de l'affichage des projets en conséquence
-async function displayManager() {
+async function filterManager() {
     generateFilters();
-    let html = await returnAllProjects(currentCategory);
-    document.querySelector(".gallery").innerHTML = html;
-    
+
     let filtersButtons = document.querySelectorAll(".filter-button");
     filtersButtons.forEach(button => {
         button.addEventListener("click", async () => {
             filtersButtons.forEach(button => button.classList.remove("active"));
             button.classList.add("active");
             currentCategory = button.textContent;
-            let html = await returnAllProjects(currentCategory);
-            document.querySelector(".gallery").innerHTML = html;
+            displayProjects();
         });
     });
 }
 
-// Affiche les projets par défaut
-displayManager();
+
+
+
+
+function Display() {
+    // Afficher le mode d'édition si l'utilisateur est connecté
+    if (localStorage.getItem("authToken")) {
+        document.querySelector(".edit-banner").classList.remove("no-display");
+        document.querySelector(".login").parentElement.remove();
+
+        document.querySelector(".logout").addEventListener("click", () => {
+            localStorage.removeItem("authToken");
+            window.location.reload();
+        });
+
+        import("./modal.js");
+    }
+
+    // Mode d'affiche par défaut
+    else {
+        document.querySelector(".logout").parentElement.remove();
+        // Affiche les projets par défaut
+        filterManager();
+        document.querySelector(".modify-button").remove();
+    }
+}
+
+displayProjects();
+Display();

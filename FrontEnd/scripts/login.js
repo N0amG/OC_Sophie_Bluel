@@ -9,7 +9,7 @@ form.addEventListener("submit", async (event) => {
     const formData = new FormData(form);
     const username = formData.get("username");
     const password = formData.get("password");
-    
+
     loginRequest(username, password);
 });
 
@@ -28,7 +28,37 @@ function loginRequest(username, password) {
         body: JSON.stringify(loginData)
     }
 
-    const response = sendRequest("users/login", request);
+    sendRequest("users/login", request).then(data => {
+        if (!data.token) {
+            throw new Error("Token is undefined");
+        }
+        localStorage.setItem("authToken", data.token);
+        // renvoyer vers index.html
+        window.location = "../index.html";
+        return data.token;
+    })
+        .catch(error => {
+            console.error("Erreur de connexion:", error);
+            printLoginError();
+            return error;
+        });
+}
 
-    return response;
+function printLoginError() {
+    const errorMessage = document.querySelector(".error");
+    if (!errorMessage) {
+        const errorElement = document.createElement("p");
+        errorElement.className = "error";
+        errorElement.textContent = "Erreur dans l'email ou le mot de passe";
+        const form = document.getElementById("login-form");
+        form.appendChild(errorElement);
+    } else {
+        // Ajouter la classe 'shake' pour déclencher l'animation
+        errorMessage.classList.add("shake");
+
+        // Retirer la classe 'shake' après l'animation
+        setTimeout(() => {
+            errorMessage.classList.remove("shake");
+        }, 500);
+    }
 }

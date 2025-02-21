@@ -23,7 +23,6 @@ export async function sendRequest(endpoint, request) {
             throw new Error('Erreur de connexion');
         }
         const data = await response.json();
-        console.log(data);
         return data;
 
     } catch (error) {
