@@ -37,11 +37,20 @@ export async function displayProjects(gallery, category = "Tous") {
 
 // Gestions des filtres
 let currentCategory = "Tous";
-
+async function getAllCategories() {
+    let categories = [];
+    categories.push(currentCategory);
+    const data = await getData("categories");
+    data.forEach(category => {
+        categories.push(category.name);
+    });
+    return categories;
+}
 
 // Génère les boutons de filtres
-function generateFilters() {
-    let categories = ["Tous", "Objets", "Appartements", "Hotels & restaurants"];
+async function generateFilters() {
+    let categories = await getAllCategories();
+    console.log(categories);
     const portfolio = document.querySelector("#portfolio");
     const gallery = document.querySelector(".gallery");
     let ul = document.createElement("ul");
@@ -63,15 +72,16 @@ function generateFilters() {
 
 // Gestion des boutons filtres et de l'affichage des projets en conséquence
 async function filterManager() {
-    generateFilters();
+    generateFilters().then(() => {
 
-    let filtersButtons = document.querySelectorAll(".filter-button");
-    filtersButtons.forEach(button => {
-        button.addEventListener("click", async () => {
-            filtersButtons.forEach(button => button.classList.remove("active"));
-            button.classList.add("active");
-            currentCategory = button.textContent;
-            displayProjects(".gallery", currentCategory);
+        let filtersButtons = document.querySelectorAll(".filter-button");
+        filtersButtons.forEach(button => {
+            button.addEventListener("click", async () => {
+                filtersButtons.forEach(button => button.classList.remove("active"));
+                button.classList.add("active");
+                currentCategory = button.textContent;
+                displayProjects(".gallery", currentCategory);
+            });
         });
     });
 }
