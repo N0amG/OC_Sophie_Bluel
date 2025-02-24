@@ -88,7 +88,7 @@ header {
 	font-size: 16px;
 }
 
-.no-display {
+.no-display, .gallery-modal figure figcaption {
 	display: none;
 }
 
@@ -180,19 +180,6 @@ li:hover, a:hover {
 
 }
 
-.modal h3 {
-	margin-top: ;
-}
-.gallery-modal {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	padding: 0 100px;
-}
-.gallery-modal figure, .gallery-modal img {
-	width: 76px;
-    height: 102px;
-}
 #contact {
 	width: 50%;
 	margin: auto;
@@ -225,7 +212,7 @@ li:hover, a:hover {
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
-input[type="submit"] {
+input[type="submit"], .button {
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;
@@ -321,6 +308,7 @@ a {
 .modal {
     background: white;
     width: 630px;
+	height: 610px;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     transform: translateY(-20px);
@@ -328,6 +316,10 @@ a {
     text-align: center;
 	font-size: 26px;
     position: relative;
+	padding: 26px 30px 45px 30px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
 
 /* Bouton de fermeture */
@@ -337,4 +329,35 @@ a {
 	width: 100%;
 	display: flex;
 	justify-content: right;
+}
+.gallery-modal {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin: 46px 100px 60px 100px;
+	border-bottom: 1px solid #B3B3B3;
+}
+.gallery-modal figure, .gallery-modal img {
+	width: calc((100% - 200px -9px) / 5);
+    height: 102px;
+	position: relative;
+}
+.gallery-modal figure {
+	margin-bottom: 30px;
+}
+.fa-trash-can {
+	color: white;
+	background-color: black;
+	font-size: 11px;
+	border-radius: 20%;
+	position: absolute;
+	top: 6px;
+	right: 3px;
+	padding: 3px 4px;
+	cursor: pointer;
+}
+
+.button {
+	font-size: 14px;
+	padding: 10px 50px;
 }
