@@ -223,8 +223,9 @@ input[type="submit"], .button {
 	border-radius: 60px;
 	transition: 0.3s ease;
 }
-input[type="submit"]:hover {
+input[type="submit"]:hover, .button:hover {
     background-color: var(--hover-main-color);
+	color: white;
 }
 
 footer {
@@ -287,6 +288,11 @@ a {
 	background-color: var(--main-color);
 }
 
+.no-projects {
+    font-size: 16px;
+    grid-column: 1 / -1; /* Étend l'élément sur toutes les colonnes */
+    text-align: center;
+}
 /* Modal */
 
 .modify-button:hover { cursor: pointer; }
@@ -330,31 +336,34 @@ a {
 	display: flex;
 	justify-content: right;
 }
+
+/* Galerie modale */
 .gallery-modal {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	margin: 46px 100px 60px 100px;
-	border-bottom: 1px solid #B3B3B3;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 76px);
+    gap: 30px;
+    margin: 46px 100px 0px 100px;
+	padding-bottom: 67px;
+    border-bottom: 1px solid #B3B3B3;
+	justify-content: center;
 }
+
 .gallery-modal figure, .gallery-modal img {
-	width: calc((100% - 200px -9px) / 5);
+    width: 76px;
     height: 102px;
-	position: relative;
+    position: relative;
 }
-.gallery-modal figure {
-	margin-bottom: 30px;
-}
+
 .fa-trash-can {
-	color: white;
-	background-color: black;
-	font-size: 11px;
-	border-radius: 20%;
-	position: absolute;
-	top: 6px;
-	right: 3px;
-	padding: 3px 4px;
-	cursor: pointer;
+    color: white;
+    background-color: black;
+    font-size: 11px;
+    border-radius: 20%;
+    position: absolute;
+    top: 6px;
+    right: 3px;
+    padding: 3px 4px;
+    cursor: pointer;
 }
 
 .button {

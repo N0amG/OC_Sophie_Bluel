@@ -38,7 +38,7 @@ function loginRequest(username, password) {
         return data.token;
     })
         .catch(error => {
-            console.error("Erreur de connexion:", error);
+            console.error(error);
             printLoginError();
             return error;
         });

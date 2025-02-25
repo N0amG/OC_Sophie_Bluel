@@ -32,10 +32,13 @@ function displayModal() {
 		const galleryModal = document.querySelector(".gallery-modal");
 		const children = Array.from(galleryModal.children);
 		children.forEach(child => {
-			child.querySelector(".fa-trash-can").addEventListener("click", () => {
-				const projectId = child.classList[0].split('-').pop();
-				deleteProject(projectId);
-			})
+			const trash = child.querySelector(".fa-trash-can");
+			if (trash) {
+				trash.addEventListener("click", () => {
+					const projectId = child.classList[0].split('-').pop();
+					deleteProject(projectId);
+				})
+			}
 		});
 	});
 }
@@ -50,9 +53,16 @@ function deleteProject(id = "") {
 		}
 	}
 	sendRequest(`works/${id}`, request).then(() => {
+		let displayReload = false;
 		document.querySelectorAll(`.project-${id}`).forEach(project => {
+			if (project.parentNode.childElementCount === 1)
+				displayReload = true;
 			project.parentNode.removeChild(project)
 		})
+		if (displayReload) {
+			displayProjects(".gallery")
+			displayProjects(".gallery-modal")
+		}
 	}).catch((response) => {
 		return Error(`Erreur: ${response.status} ${response.statusText}`);
 	})

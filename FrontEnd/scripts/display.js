@@ -1,7 +1,5 @@
 import { getData } from "./utils/api.js";
 
-console.log("display.js chargé");
-
 // Récupère les données des projets via l'API
 async function getProjectsData() {
 	const data = await getData("works");
@@ -11,12 +9,13 @@ async function getProjectsData() {
 // Retourne le code HTML d'un projet
 function returnOneProject(project, gallery) {
 	if (gallery === ".gallery") {
-	return `
+		return `
 		<figure class="project-${project.id}">
 			<img src="${project.imageUrl}" alt="${project.title}">
 			<figcaption>${project.title}</figcaption>
 		</figure>
-	`;}
+	`;
+	}
 	else if (gallery === ".gallery-modal") {
 		return `
 		<figure class="project-${project.id}">
@@ -27,6 +26,8 @@ function returnOneProject(project, gallery) {
 	}
 }
 
+const noProjectsMessage = '<span class="no-projects">Aucun projets<span>';
+
 // Retourne le code HTML de tous les projets en fonction de la catégorie
 async function returnAllProjects(category, gallery) {
 	let projects = await getProjectsData();
@@ -36,6 +37,8 @@ async function returnAllProjects(category, gallery) {
 			html += returnOneProject(project, gallery);
 		}
 	});
+	if (html === '')
+		html = noProjectsMessage;
 	return html;
 }
 

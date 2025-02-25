@@ -23,7 +23,7 @@ export async function sendRequest(endpoint, request) {
 			throw new Error('Erreur de connexion');
 		}
 		let data;
-		if (request.headers['Content-type'] === 'application/json')
+		if (request.headers['Content-Type'] === "application/json")
 			data = await response.json();
 		 else 
 			data = await response;
