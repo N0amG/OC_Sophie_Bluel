@@ -1,18 +1,7 @@
 import { displayProjects } from "./display.js";
 import { sendRequest } from "./utils/api.js";
 
-function displayModal() {
-	let html = `
-	<div class="modal">
-		<div>
-			<span class="close">&times;</span>
-			<h3>Galerie Photo</h3>
-		</div>
-		<div class="gallery-modal">
-		</div>
-		<a href="#" class="add-button button">Ajouter une photo</a>
-	</div>`;
-
+function displayModal(html) {
 	const overlay = document.createElement("div");
 	overlay.id = "overlay";
 	overlay.className = "overlay";
@@ -27,6 +16,23 @@ function displayModal() {
 	close.addEventListener("click", () => {
 		portfolio.removeChild(overlay);
 	});
+}
+
+function displayGalleryModal() {
+	let html = `
+	<div class="modal">
+		<div>
+			<div class="modal-nav">
+				<span class="close">&times;</span>
+			</div>
+			<h3>Galerie Photo</h3>
+		</div>
+		<div class="gallery-modal">
+		</div>
+		<a class="add-button button">Ajouter une photo</a>
+	</div>`;
+
+	displayModal(html);
 
 	displayProjects(".gallery-modal").then(() => {
 		const galleryModal = document.querySelector(".gallery-modal");
@@ -42,7 +48,6 @@ function displayModal() {
 		});
 	});
 }
-
 
 function deleteProject(id = "") {
 	const request = {
@@ -70,4 +75,4 @@ function deleteProject(id = "") {
 
 
 
-document.querySelector(".modify-button").addEventListener("click", displayModal);
+document.querySelector(".modify-button").addEventListener("click", displayGalleryModal);

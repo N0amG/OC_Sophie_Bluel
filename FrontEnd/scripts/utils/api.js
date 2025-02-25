@@ -15,7 +15,6 @@ export async function getData(endpoint) {
 }
 
 export async function sendRequest(endpoint, request) {
-
 	try {
 		const response = await fetch(`${API_URL}/${endpoint}`, request);
 

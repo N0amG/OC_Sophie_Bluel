@@ -226,6 +226,7 @@ input[type="submit"], .button {
 input[type="submit"]:hover, .button:hover {
     background-color: var(--hover-main-color);
 	color: white;
+	cursor: pointer;
 }
 
 footer {
@@ -339,12 +340,13 @@ a {
 
 /* Galerie modale */
 .gallery-modal {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 76px);
-    gap: 30px;
-    margin: 46px 100px 0px 100px;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 76px);
+	grid-column-gap: 10px;
+	grid-row-gap: 30px;
+	margin: 46px 70px 0px 70px;
 	padding-bottom: 67px;
-    border-bottom: 1px solid #B3B3B3;
+	border-bottom: 1px solid #B3B3B3;
 	justify-content: center;
 }
 
