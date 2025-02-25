@@ -33,6 +33,7 @@ function displayGalleryModal() {
 	</div>`;
 
 	displayModal(html);
+	document.querySelector(".add-button").addEventListener("click", addProjectModal);
 
 	displayProjects(".gallery-modal").then(() => {
 		const galleryModal = document.querySelector(".gallery-modal");
@@ -73,6 +74,79 @@ function deleteProject(id = "") {
 	})
 }
 
+function addProjectModal() {
+    let html = `
+    <div class="modal">
+        <div>
+            <div class="modal-nav">
+                <span class="close">&times;</span>
+            </div>
+            <h3>Ajout photo</h3>
+        </div>
+        <div class="modal-content">
+            <div class="upload-section">
+                <label for="photo-upload" class="upload-label">
+                    <div class="upload-preview">
+                        <img id="preview-image" src="#" alt="Aperçu" style="display: none;">
+                        <span class="upload-icon">📷</span>
+                    </div>
+                    <input type="file" id="photo-upload" accept="image/png, image/jpeg" hidden>
+                    <p>+ Ajouter photo</p>
+                    <p>jpg, png : 4mo max</p>
+                </label>
+            </div>
+            <input type="text" id="photo-title" placeholder="Titre">
+            <select id="photo-category">
+                <option value="" disabled selected>Catégorie</option>
+                <option value="nature">Nature</option>
+                <option value="architecture">Architecture</option>
+                <option value="portrait">Portrait</option>
+            </select>
+            <button id="validate-button" disabled>Valider</button>
+        </div>
+    </div>`;
+
+    displayModal(html);
+
+    // const fileInput = document.getElementById("photo-upload");
+    // const previewImage = document.getElementById("preview-image");
+    // const validateButton = document.getElementById("validate-button");
+    // const titleInput = document.getElementById("photo-title");
+    // const categorySelect = document.getElementById("photo-category");
+	
+    // fileInput.addEventListener("change", (event) => {
+    //     const file = event.target.files[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.onload = (e) => {
+    //             previewImage.src = e.target.result;
+    //             previewImage.style.display = "block";
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    //     checkFormValidity();
+    // });
+
+    // titleInput.addEventListener("input", checkFormValidity);
+    // categorySelect.addEventListener("change", checkFormValidity);
+
+    // function checkFormValidity() {
+    //     if (fileInput.files.length > 0 && titleInput.value.trim() !== "" && categorySelect.value !== "") {
+    //         validateButton.disabled = false;
+    //     } else {
+    //         validateButton.disabled = true;
+    //     }
+    // }
+
+    // validateButton.addEventListener("click", () => {
+    //     console.log("Formulaire soumis !");
+    //     fileInput.value = "";
+    //     titleInput.value = "";
+    //     categorySelect.selectedIndex = 0;
+    //     previewImage.style.display = "none";
+    //     validateButton.disabled = true;
+    // });
+}
 
 
 document.querySelector(".modify-button").addEventListener("click", displayGalleryModal);
