@@ -27,6 +27,7 @@ function returnOneProject(project, gallery) {
 }
 
 const noProjectsMessage = '<span class="no-projects">Aucun projets<span>';
+const noDatabaseMessage = "<span class='no-projects'>Erreur de connexion à la base de données<span>";
 
 // Retourne le code HTML de tous les projets en fonction de la catégorie
 async function returnAllProjects(category, gallery) {
@@ -48,7 +49,7 @@ export async function displayProjects(gallery, category = "Tous") {
 		document.querySelector(gallery).innerHTML = html;
 		return true;
 	} catch (error) {
-		console.error(error);
+		document.querySelector(gallery).innerHTML = noDatabaseMessage;
 		return error;
 	}
 }
