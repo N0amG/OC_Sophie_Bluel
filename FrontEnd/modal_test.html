@@ -36,7 +36,7 @@
 		</div>
 	</header>
 	<main>
-		<form>
+		<form method="post">
 			<div class="modal">
 				<div class="form-container">
 					<div>
@@ -77,7 +77,7 @@
 							</div>
 						</div>
 					</div>
-					<button id="validate-button" disabled class="disabled">Valider</button>
+					<button id="validate-button" disabled>Valider</button>
 				</div>
 			</div>
 		</form>
@@ -93,46 +93,74 @@
 </body>
 
 <script>
-	console.log("updateImagePreview called");
-	const fileInput = document.getElementById("photo-upload");
-	const previewImage = document.getElementById("preview-image");
 
-	fileInput.addEventListener("change", (event) => {
-		// Supprime le message d'erreur s'il existe déjà
-		const existingError = document.querySelector(".upload-section .error");
-		let shake = "";
-		if (existingError) {
-			existingError.remove();
-			shake = "shake";
-		}
 
-		const file = event.target.files[0];
+	function imgPreview() {
+		const fileInput = document.getElementById("photo-upload");
+		const previewImage = document.getElementById("preview-image");
 
-		if (file && file.size <= 4 * 1024 * 1024 &&
-			(file.type === "image/png" || file.type === "image/jpeg")) { // Fichier valide (<= 4 Mo)
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				previewImage.src = e.target.result;
-				previewImage.style.display = "block"; // Réaffiche l'image après le chargement
-			};
-			reader.readAsDataURL(file);
+		fileInput.addEventListener("change", (event) => {
+			// Supprime le message d'erreur s'il existe déjà
+			const existingError = document.querySelector(".upload-section .error");
+			let shake = "";
+			if (existingError) {
+				existingError.remove();
+				shake = "shake";
+			}
 
-			// Met à jour la zone de prévisualisation sans supprimer les éléments
-			const uploadPreview = document.querySelector(".upload-label");
-			uploadPreview.innerHTML = "";
-			uploadPreview.appendChild(fileInput);
-			uploadPreview.appendChild(previewImage);
-		} else {
-			// Réinitialise l'input pour autoriser une nouvelle sélection
-			fileInput.value = "";
-			// Affiche le message d'erreur sans supprimer les autres éléments
-			const uploadSection = document.querySelector(".upload-label");
-			if (file.size > 4 * 1024 * 1024)
-				uploadSection.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Fichier trop volumineux</span>`);
-			else
-				uploadSection.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Type de fichier invalide</span>`);
-		}
-	});
+			const file = event.target.files[0];
+
+			if (file && file.size <= 4 * 1024 * 1024 &&
+				(file.type === "image/png" || file.type === "image/jpeg")) { // Fichier valide (<= 4 Mo)
+				const reader = new FileReader();
+				reader.onload = (e) => {
+					previewImage.src = e.target.result;
+					previewImage.style.display = "block"; // Réaffiche l'image après le chargement
+				};
+				reader.readAsDataURL(file);
+
+				// Met à jour la zone de prévisualisation sans supprimer les éléments
+				const uploadPreview = document.querySelector(".upload-label");
+				uploadPreview.innerHTML = "";
+				uploadPreview.appendChild(fileInput);
+				uploadPreview.appendChild(previewImage);
+			} else {
+				// Réinitialise l'input pour autoriser une nouvelle sélection
+				fileInput.value = "";
+				// Affiche le message d'erreur sans supprimer les autres éléments
+				const uploadSection = document.querySelector(".upload-label");
+				if (file.size > 4 * 1024 * 1024)
+					uploadSection.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Fichier trop volumineux</span>`);
+				else
+					uploadSection.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Type de fichier invalide</span>`);
+			}
+		});
+	}
+
+	function checkFormValidity() {
+		document.addEventListener("DOMContentLoaded", () => {
+			const fileInput = document.getElementById("photo-upload");
+			const titleInput = document.getElementById("photo-title");
+			const categorySelect = document.getElementById("photo-category");
+			const validateButton = document.getElementById("validate-button");
+
+			function updateValidateButtonState() {
+				const file = fileInput.files[0];
+				const isFileValid = file && file.size <= 4 * 1024 * 1024 &&
+					(file.type === "image/png" || file.type === "image/jpeg");
+				const isTitleValid = titleInput.value.trim() !== "";
+				const isCategoryValid = categorySelect.value !== "";
+
+				validateButton.disabled = !(isFileValid && isTitleValid && isCategoryValid);
+			}
+
+			fileInput.addEventListener("change", updateValidateButtonState);
+			titleInput.addEventListener("input", updateValidateButtonState);
+			categorySelect.addEventListener("change", updateValidateButtonState);
+		});
+	}
+	imgPreview();
+	checkFormValidity();
 </script>
 
 </html>
