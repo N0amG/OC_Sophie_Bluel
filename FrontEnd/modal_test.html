@@ -49,7 +49,9 @@
 						<div class="upload-section">
 							<label for="photo-upload" class="upload-label">
 								<div class="upload-preview">
-									<img id="preview-image" src="#" alt="Aperçu" style="display: none;">
+									<div class="img-container">
+										<img id="preview-image" class="no-display" src="#" alt="Aperçu">
+									</div>
 									<i class="fa-regular fa-image"></i>
 								</div>
 								<input type="file" id="photo-upload" accept="image/png, image/jpeg" hidden>
@@ -71,11 +73,11 @@
 									<option value="appartements">Appartements</option>
 									<option value="hotels & restaurants">Hotels & restaurants</option>
 								</select>
-								
+
 							</div>
 						</div>
 					</div>
-					<button id="validate-button" disabled>Valider</button>
+					<button id="validate-button" disabled class="disabled">Valider</button>
 				</div>
 			</div>
 		</form>
@@ -89,5 +91,48 @@
 		</nav>
 	</footer>
 </body>
+
+<script>
+	console.log("updateImagePreview called");
+	const fileInput = document.getElementById("photo-upload");
+	const previewImage = document.getElementById("preview-image");
+
+	fileInput.addEventListener("change", (event) => {
+		// Supprime le message d'erreur s'il existe déjà
+		const existingError = document.querySelector(".upload-section .error");
+		let shake = "";
+		if (existingError) {
+			existingError.remove();
+			shake = "shake";
+		}
+
+		const file = event.target.files[0];
+
+		if (file && file.size <= 4 * 1024 * 1024 &&
+			(file.type === "image/png" || file.type === "image/jpeg")) { // Fichier valide (<= 4 Mo)
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				previewImage.src = e.target.result;
+				previewImage.style.display = "block"; // Réaffiche l'image après le chargement
+			};
+			reader.readAsDataURL(file);
+
+			// Met à jour la zone de prévisualisation sans supprimer les éléments
+			const uploadPreview = document.querySelector(".upload-label");
+			uploadPreview.innerHTML = "";
+			uploadPreview.appendChild(fileInput);
+			uploadPreview.appendChild(previewImage);
+		} else {
+			// Réinitialise l'input pour autoriser une nouvelle sélection
+			fileInput.value = "";
+			// Affiche le message d'erreur sans supprimer les autres éléments
+			const uploadSection = document.querySelector(".upload-label");
+			if (file.size > 4 * 1024 * 1024)
+				uploadSection.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Fichier trop volumineux</span>`);
+			else
+				uploadSection.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Type de fichier invalide</span>`);
+		}
+	});
+</script>
 
 </html>

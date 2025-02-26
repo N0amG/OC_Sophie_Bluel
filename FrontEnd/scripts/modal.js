@@ -76,38 +76,52 @@ function deleteProject(id = "") {
 
 function addProjectModal() {
     let html = `
-    <div class="modal">
-        <div>
-            <div class="modal-nav">
-                <span class="close">&times;</span>
-            </div>
-            <h3>Ajout photo</h3>
-        </div>
-        <div class="modal-content">
-            <div class="upload-section">
-                <label for="photo-upload" class="upload-label">
-                    <div class="upload-preview">
-                        <img id="preview-image" src="#" alt="Aperçu" style="display: none;">
-                        <span class="upload-icon">📷</span>
-                    </div>
-                    <input type="file" id="photo-upload" accept="image/png, image/jpeg" hidden>
-                    <p>+ Ajouter photo</p>
-                    <p>jpg, png : 4mo max</p>
-                </label>
-            </div>
-            <input type="text" id="photo-title" placeholder="Titre">
-            <select id="photo-category">
-                <option value="" disabled selected>Catégorie</option>
-                <option value="nature">Nature</option>
-                <option value="architecture">Architecture</option>
-                <option value="portrait">Portrait</option>
-            </select>
-            <button id="validate-button" disabled>Valider</button>
-        </div>
-    </div>`;
+    <form>
+			<div class="modal">
+				<div class="form-container">
+					<div>
+						<div class="modal-nav">
+							<span class="close">&times;</span>
+						</div>
+						<h3>Ajout photo</h3>
+					</div>
+					<div class="modal-content">
+						<div class="upload-section">
+							<label for="photo-upload" class="upload-label">
+								<div class="upload-preview">
+									<img id="preview-image" src="#" alt="Aperçu" style="display: none;">
+									<i class="fa-regular fa-image"></i>
+								</div>
+								<input type="file" id="photo-upload" accept="image/png, image/jpeg" hidden>
+								<a class="button add-pic">+ Ajouter photo</a>
+								<span class="info">jpg, png : 4mo max</span>
+							</label>
+						</div>
+						<div>
+							<label class="form-label" for="photo-title">Titre</label>
+							<input type="text" id="photo-title">
+						</div>
+						<div>
+							<label class="form-label" for="photo-category">Catégorie</label>
+							<div class="select-container">
+								<i class="fa-solid fa-chevron-down"></i>
+								<select id="photo-category">
+									<option value="" disabled selected></option>
+									<option value="objets">Objets</option>
+									<option value="appartements">Appartements</option>
+									<option value="hotels & restaurants">Hotels & restaurants</option>
+								</select>
+								
+							</div>
+						</div>
+					</div>
+					<button id="validate-button" disabled>Valider</button>
+				</div>
+			</div>
+		</form>`;
 
     displayModal(html);
-
+    updateImagePreview();
     // const fileInput = document.getElementById("photo-upload");
     // const previewImage = document.getElementById("preview-image");
     // const validateButton = document.getElementById("validate-button");
@@ -150,3 +164,22 @@ function addProjectModal() {
 
 
 document.querySelector(".modify-button").addEventListener("click", displayGalleryModal);
+
+function updateImagePreview() {
+    console.log("updateImagePreview called");
+    const fileInput = document.getElementById("photo-upload");
+    const previewImage = document.getElementById("preview-image");
+    fileInput.addEventListener("change", (event) => {
+        console.log("File selected !");
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+addProjectModal();
