@@ -1,31 +1,33 @@
-import { displayProjects } from "./display.js";
+import { displayProjects, getAllCategories } from "./display.js";
 import { sendRequest, getData } from "./utils/api.js";
 
 function displayModal(html, parent) {
-	const overlay = document.createElement("div");
-	overlay.id = "overlay";
-	overlay.className = "overlay";
+	let overlay = document.getElementById("overlay");
+	if (!overlay) {
+		overlay = document.createElement("div");
+		overlay.id = "overlay";
+		overlay.className = "overlay";
+	}
 	overlay.innerHTML = html;
-
 	const portfolio = document.getElementById("portfolio");
 	const parentDiv = document.querySelector(parent);
 
 	portfolio.insertBefore(overlay, parentDiv);
 
-	const closes = document.querySelectorAll(".close");
-	closes.forEach(close => {
-		close.addEventListener("click", () => {
-			document.querySelectorAll(".overlay").forEach(overlay => portfolio.removeChild(overlay));
-		});
+	const close = document.querySelector(".close");
+	close.addEventListener("click", () => {
+		portfolio.removeChild(overlay)
 	});
-
 	const arrow = document.querySelector(".fa-arrow-left");
 	if (arrow) {
 		arrow.addEventListener("click", () => {
-			arrow.closest(".overlay").remove();
-		});
-	}
+			close.click();
+			displayGalleryModal();
+		}
+		)
+	};
 }
+
 
 function displayGalleryModal() {
 	let html = `
@@ -66,7 +68,7 @@ function deleteProject(id = "") {
 		method: 'DELETE',
 		headers: {
 			'Content-type': 'None',
-			'Authorization': `Bearer ${localStorage.getItem("authToken").token}`
+			'Authorization': `Bearer ${localStorage.getItem("authToken")}`
 		}
 	}
 	sendRequest(`works/${id}`, request).then(() => {
@@ -123,17 +125,17 @@ function addProjectModal() {
 						</div>
 						<div>
 							<label class="form-label" for="photo-title">Titre</label>
-							<input type="text" id="photo-title">
+							<input type="text" id="photo-title" value="Naraku">
 						</div>
 						<div>
 							<label class="form-label" for="photo-category">Catégorie</label>
 							<div class="select-container">
 								<i class="fa-solid fa-chevron-down"></i>
 								<select id="photo-category">
-									<option value="" disabled selected></option>
-									<option value="objets">Objets</option>
-									<option value="appartements">Appartements</option>
-									<option value="hotels & restaurants">Hotels & restaurants</option>
+									<option value="Objets" selected>Objets</option>
+									<option value="" disabled ></option>
+									<option value="Appartements">Appartements</option>
+									<option value="Hotels & restaurants">Hotels & restaurants</option>
 								</select>
 
 							</div>
@@ -212,21 +214,33 @@ function checkFormValidity() {
 	validateButton.addEventListener("click", (event) => {
 		event.preventDefault();
 		// Envoi du formulaire
-		//sendProject(fileInput.files[0], titleInput.value, categorySelect.value);
+		sendProject(fileInput.files[0], titleInput.value, categorySelect.value);
 	});
 }
 
-function sendProject(img, title, category) {
-	request = {
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: {
-			"id": getData("works").length,
-			"title": title,
-			"imageUrl": img,
-			"category": category,
-			"userId": localStorage.getItem("authToken").userId
-		}
-	}
+async function sendProject(file, title, category) {
+    try {
+        const allCategories = await getAllCategories();
+        const categoryId = allCategories[category];
+
+        const formData = new FormData();
+		console.log("formData", formData);
+        formData.append("title", title);
+        formData.append("image", file);
+        formData.append("category", categoryId);
+
+        const request = {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+            },
+            body: formData
+        };
+
+        console.log("Requête envoyée :", request);
+        const response = await sendRequest("works", request);
+        console.log("Projet ajouté avec succès:", response);
+    } catch (error) {
+        console.error("Erreur lors de l'ajout du projet:", error);
+    }
 }

@@ -22,15 +22,17 @@ export async function sendRequest(endpoint, request) {
 			throw new Error('Erreur de connexion');
 		}
 		let data;
-		if (request.headers['Content-Type'] === "application/json")
+		if (!request.headers['Content-Type'] === "none") {
 			data = await response.json();
-		 else 
+			console.log("Réponse de l'API :", response);
+		}
+		else {
 			data = await response;
+		}
 		return data;
 
 	} catch (error) {
 		console.log(error);
 		return error;
 	}
-
 }

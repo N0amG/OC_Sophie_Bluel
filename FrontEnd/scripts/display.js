@@ -56,12 +56,11 @@ export async function displayProjects(gallery, category = "Tous") {
 
 // Gestions des filtres
 let currentCategory = "Tous";
-async function getAllCategories() {
-	let categories = [];
-	categories.push(currentCategory);
+export async function getAllCategories() {
+	let categories = { "Tous": "Tous" };
 	const data = await getData("categories");
 	data.forEach(category => {
-		categories.push(category.name);
+		categories[category.name] = category.id;
 	});
 	return categories;
 }
@@ -69,13 +68,12 @@ async function getAllCategories() {
 // Génère les boutons de filtres
 async function generateFilters() {
 	let categories = await getAllCategories();
-	console.log(categories);
 	const portfolio = document.querySelector("#portfolio");
 	const gallery = document.querySelector(".gallery");
 	let ul = document.createElement("ul");
 	ul.id = "filters";
 	let html = '';
-	categories.forEach(category => {
+	Object.keys(categories).forEach(category => {
 		let activeClass = category === currentCategory ? 'active' : '';
 		html += `
 			<li>
@@ -114,6 +112,7 @@ function display() {
 
 		document.querySelector(".logout").addEventListener("click", () => {
 			localStorage.removeItem("authToken");
+			localStorage.removeItem("userId");
 			window.location.reload();
 		});
 
