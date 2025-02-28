@@ -323,19 +323,25 @@ a {
     text-align: center;
 	font-size: 26px;
     position: relative;
-	padding: 26px 30px 45px 30px;
+	padding: 26px 30px 0 30px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 }
 
-/* Bouton de fermeture */
-.close {
-    font-size: 25px;
-    cursor: pointer;
-	width: 100%;
+.modal-nav {
 	display: flex;
-	justify-content: right;
+	justify-content: space-between;
+	flex-direction: row-reverse;
+}
+
+/* Bouton de fermeture */
+.close, .arrow {
+    font-size: 20px;
+    cursor: pointer;
+	display: flex;
+	justify-self: right;
+	width: fit-content;
 }
 
 /* Galerie modale */
@@ -345,9 +351,10 @@ a {
 	grid-column-gap: 10px;
 	grid-row-gap: 30px;
 	margin: 46px 70px 0px 70px;
-	padding-bottom: 67px;
+	padding-bottom: 55px;
 	border-bottom: 1px solid #B3B3B3;
 	justify-content: center;
+	overflow: overlay;
 }
 
 .gallery-modal figure, .gallery-modal img {

@@ -36,51 +36,7 @@
 		</div>
 	</header>
 	<main>
-		<form method="post">
-			<div class="modal">
-				<div class="form-container">
-					<div>
-						<div class="modal-nav">
-							<span class="close">&times;</span>
-						</div>
-						<h3>Ajout photo</h3>
-					</div>
-					<div class="modal-content">
-						<div class="upload-section">
-							<label for="photo-upload" class="upload-label">
-								<div class="upload-preview">
-									<div class="img-container">
-										<img id="preview-image" class="no-display" src="#" alt="Aperçu">
-									</div>
-									<i class="fa-regular fa-image"></i>
-								</div>
-								<input type="file" id="photo-upload" accept="image/png, image/jpeg" hidden>
-								<a class="button add-pic">+ Ajouter photo</a>
-								<span class="info">jpg, png : 4mo max</span>
-							</label>
-						</div>
-						<div>
-							<label class="form-label" for="photo-title">Titre</label>
-							<input type="text" id="photo-title">
-						</div>
-						<div>
-							<label class="form-label" for="photo-category">Catégorie</label>
-							<div class="select-container">
-								<i class="fa-solid fa-chevron-down"></i>
-								<select id="photo-category">
-									<option value="" disabled selected></option>
-									<option value="objets">Objets</option>
-									<option value="appartements">Appartements</option>
-									<option value="hotels & restaurants">Hotels & restaurants</option>
-								</select>
-
-							</div>
-						</div>
-					</div>
-					<button id="validate-button" disabled>Valider</button>
-				</div>
-			</div>
-		</form>
+		
 	</main>
 
 	<footer>
@@ -91,76 +47,5 @@
 		</nav>
 	</footer>
 </body>
-
-<script>
-
-
-	function imgPreview() {
-		const fileInput = document.getElementById("photo-upload");
-		const previewImage = document.getElementById("preview-image");
-
-		fileInput.addEventListener("change", (event) => {
-			// Supprime le message d'erreur s'il existe déjà
-			const existingError = document.querySelector(".upload-section .error");
-			let shake = "";
-			if (existingError) {
-				existingError.remove();
-				shake = "shake";
-			}
-
-			const file = event.target.files[0];
-
-			if (file && file.size <= 4 * 1024 * 1024 &&
-				(file.type === "image/png" || file.type === "image/jpeg")) { // Fichier valide (<= 4 Mo)
-				const reader = new FileReader();
-				reader.onload = (e) => {
-					previewImage.src = e.target.result;
-					previewImage.style.display = "block"; // Réaffiche l'image après le chargement
-				};
-				reader.readAsDataURL(file);
-
-				// Met à jour la zone de prévisualisation sans supprimer les éléments
-				const uploadPreview = document.querySelector(".upload-label");
-				uploadPreview.innerHTML = "";
-				uploadPreview.appendChild(fileInput);
-				uploadPreview.appendChild(previewImage);
-			} else {
-				// Réinitialise l'input pour autoriser une nouvelle sélection
-				fileInput.value = "";
-				// Affiche le message d'erreur sans supprimer les autres éléments
-				const uploadSection = document.querySelector(".upload-label");
-				if (file.size > 4 * 1024 * 1024)
-					uploadSection.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Fichier trop volumineux</span>`);
-				else
-					uploadSection.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Type de fichier invalide</span>`);
-			}
-		});
-	}
-
-	function checkFormValidity() {
-		document.addEventListener("DOMContentLoaded", () => {
-			const fileInput = document.getElementById("photo-upload");
-			const titleInput = document.getElementById("photo-title");
-			const categorySelect = document.getElementById("photo-category");
-			const validateButton = document.getElementById("validate-button");
-
-			function updateValidateButtonState() {
-				const file = fileInput.files[0];
-				const isFileValid = file && file.size <= 4 * 1024 * 1024 &&
-					(file.type === "image/png" || file.type === "image/jpeg");
-				const isTitleValid = titleInput.value.trim() !== "";
-				const isCategoryValid = categorySelect.value !== "";
-
-				validateButton.disabled = !(isFileValid && isTitleValid && isCategoryValid);
-			}
-
-			fileInput.addEventListener("change", updateValidateButtonState);
-			titleInput.addEventListener("input", updateValidateButtonState);
-			categorySelect.addEventListener("change", updateValidateButtonState);
-		});
-	}
-	imgPreview();
-	checkFormValidity();
-</script>
 
 </html>

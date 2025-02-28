@@ -32,7 +32,7 @@ function loginRequest(username, password) {
         if (!data.token) {
             throw new Error("Token is undefined");
         }
-        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("authToken", data);
         // renvoyer vers index.html
         window.location = "../index.html";
         return data.token;

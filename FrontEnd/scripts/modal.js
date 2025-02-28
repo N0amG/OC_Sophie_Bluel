@@ -1,21 +1,30 @@
 import { displayProjects } from "./display.js";
-import { sendRequest } from "./utils/api.js";
+import { sendRequest, getData } from "./utils/api.js";
 
-function displayModal(html) {
+function displayModal(html, parent) {
 	const overlay = document.createElement("div");
 	overlay.id = "overlay";
 	overlay.className = "overlay";
 	overlay.innerHTML = html;
 
 	const portfolio = document.getElementById("portfolio");
-	const gallery = document.querySelector(".gallery-modal");
+	const parentDiv = document.querySelector(parent);
 
-	portfolio.insertBefore(overlay, gallery);
+	portfolio.insertBefore(overlay, parentDiv);
 
-	const close = document.querySelector(".close");
-	close.addEventListener("click", () => {
-		portfolio.removeChild(overlay);
+	const closes = document.querySelectorAll(".close");
+	closes.forEach(close => {
+		close.addEventListener("click", () => {
+			document.querySelectorAll(".overlay").forEach(overlay => portfolio.removeChild(overlay));
+		});
 	});
+
+	const arrow = document.querySelector(".fa-arrow-left");
+	if (arrow) {
+		arrow.addEventListener("click", () => {
+			arrow.closest(".overlay").remove();
+		});
+	}
 }
 
 function displayGalleryModal() {
@@ -23,7 +32,7 @@ function displayGalleryModal() {
 	<div class="modal">
 		<div>
 			<div class="modal-nav">
-				<span class="close">&times;</span>
+				<i class="fa-solid fa-xmark close"></i>
 			</div>
 			<h3>Galerie Photo</h3>
 		</div>
@@ -32,7 +41,7 @@ function displayGalleryModal() {
 		<a class="add-button button">Ajouter une photo</a>
 	</div>`;
 
-	displayModal(html);
+	displayModal(html, ".gallery-modal");
 	document.querySelector(".add-button").addEventListener("click", addProjectModal);
 
 	displayProjects(".gallery-modal").then(() => {
@@ -50,12 +59,14 @@ function displayGalleryModal() {
 	});
 }
 
+
+
 function deleteProject(id = "") {
 	const request = {
 		method: 'DELETE',
 		headers: {
 			'Content-type': 'None',
-			'Authorization': `Bearer ${localStorage.getItem("authToken")}`
+			'Authorization': `Bearer ${localStorage.getItem("authToken").token}`
 		}
 	}
 	sendRequest(`works/${id}`, request).then(() => {
@@ -74,22 +85,35 @@ function deleteProject(id = "") {
 	})
 }
 
+
+
+
+document.querySelector(".modify-button").addEventListener("click", displayGalleryModal);
+
+
+
+// Modal d'ajout de projet
+
 function addProjectModal() {
-    let html = `
-    <form>
-			<div class="modal">
-				<div class="form-container">
-					<div>
-						<div class="modal-nav">
-							<span class="close">&times;</span>
-						</div>
-						<h3>Ajout photo</h3>
+	let html = `
+		<div class="modal">
+			<div class="form-container">
+				<div>
+					<div class="modal-nav">
+						<i class="fa-solid fa-xmark close"></i>
+						<i class="fa-solid fa-arrow-left arrow"></i>
 					</div>
+					<h3>Ajout photo</h3>
+				</div>
+				<form method="post">
+
 					<div class="modal-content">
 						<div class="upload-section">
 							<label for="photo-upload" class="upload-label">
 								<div class="upload-preview">
-									<img id="preview-image" src="#" alt="Aperçu" style="display: none;">
+									<div class="img-container">
+										<img id="preview-image" class="no-display" src="#" alt="Aperçu">
+									</div>
 									<i class="fa-regular fa-image"></i>
 								</div>
 								<input type="file" id="photo-upload" accept="image/png, image/jpeg" hidden>
@@ -111,7 +135,7 @@ function addProjectModal() {
 									<option value="appartements">Appartements</option>
 									<option value="hotels & restaurants">Hotels & restaurants</option>
 								</select>
-								
+
 							</div>
 						</div>
 					</div>
@@ -120,66 +144,89 @@ function addProjectModal() {
 			</div>
 		</form>`;
 
-    displayModal(html);
-    updateImagePreview();
-    // const fileInput = document.getElementById("photo-upload");
-    // const previewImage = document.getElementById("preview-image");
-    // const validateButton = document.getElementById("validate-button");
-    // const titleInput = document.getElementById("photo-title");
-    // const categorySelect = document.getElementById("photo-category");
-	
-    // fileInput.addEventListener("change", (event) => {
-    //     const file = event.target.files[0];
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.onload = (e) => {
-    //             previewImage.src = e.target.result;
-    //             previewImage.style.display = "block";
-    //         };
-    //         reader.readAsDataURL(file);
-    //     }
-    //     checkFormValidity();
-    // });
-
-    // titleInput.addEventListener("input", checkFormValidity);
-    // categorySelect.addEventListener("change", checkFormValidity);
-
-    // function checkFormValidity() {
-    //     if (fileInput.files.length > 0 && titleInput.value.trim() !== "" && categorySelect.value !== "") {
-    //         validateButton.disabled = false;
-    //     } else {
-    //         validateButton.disabled = true;
-    //     }
-    // }
-
-    // validateButton.addEventListener("click", () => {
-    //     console.log("Formulaire soumis !");
-    //     fileInput.value = "";
-    //     titleInput.value = "";
-    //     categorySelect.selectedIndex = 0;
-    //     previewImage.style.display = "none";
-    //     validateButton.disabled = true;
-    // });
+	displayModal(html);
+	imgPreview();
+	checkFormValidity();
 }
 
+function imgPreview() {
+	const fileInput = document.getElementById("photo-upload");
+	const previewImage = document.getElementById("preview-image");
 
-document.querySelector(".modify-button").addEventListener("click", displayGalleryModal);
+	fileInput.addEventListener("change", (event) => {
+		// Supprime le message d'erreur s'il existe déjà
+		const existingError = document.querySelector(".upload-section .error");
+		let shake = "";
+		if (existingError) {
+			existingError.remove();
+			shake = "shake";
+		}
 
-function updateImagePreview() {
-    console.log("updateImagePreview called");
-    const fileInput = document.getElementById("photo-upload");
-    const previewImage = document.getElementById("preview-image");
-    fileInput.addEventListener("change", (event) => {
-        console.log("File selected !");
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                previewImage.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
+		const file = event.target.files[0];
+
+		if (file && file.size <= 4 * 1024 * 1024 &&
+			(file.type === "image/png" || file.type === "image/jpeg")) { // Fichier valide (<= 4 Mo)
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				previewImage.src = e.target.result;
+				previewImage.style.display = "block"; // Réaffiche l'image après le chargement
+			};
+			reader.readAsDataURL(file);
+
+			// Met à jour la zone de prévisualisation sans supprimer les éléments
+			const uploadPreview = document.querySelector(".upload-label");
+			uploadPreview.innerHTML = "";
+			uploadPreview.appendChild(fileInput);
+			uploadPreview.appendChild(previewImage);
+		} else {
+			// Réinitialise l'input pour autoriser une nouvelle sélection
+			fileInput.value = "";
+			// Affiche le message d'erreur sans supprimer les autres éléments
+			const uploadSection = document.querySelector(".upload-label");
+			if (file.size > 4 * 1024 * 1024)
+				uploadSection.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Fichier trop volumineux</span>`);
+			else
+				uploadSection.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Type de fichier invalide</span>`);
+		}
+	});
 }
 
-addProjectModal();
+function checkFormValidity() {
+	const fileInput = document.getElementById("photo-upload");
+	const titleInput = document.getElementById("photo-title");
+	const categorySelect = document.getElementById("photo-category");
+	const validateButton = document.getElementById("validate-button");
+
+	function updateValidateButtonState() {
+		const file = fileInput.files[0];
+		const isFileValid = file && file.size <= 4 * 1024 * 1024 &&
+			(file.type === "image/png" || file.type === "image/jpeg");
+		const isTitleValid = titleInput.value.trim() !== "";
+		const isCategoryValid = categorySelect.value !== "";
+
+		validateButton.disabled = !(isFileValid && isTitleValid && isCategoryValid);
+	}
+	fileInput.addEventListener("change", updateValidateButtonState);
+	titleInput.addEventListener("input", updateValidateButtonState);
+	categorySelect.addEventListener("change", updateValidateButtonState);
+	validateButton.addEventListener("click", (event) => {
+		event.preventDefault();
+		// Envoi du formulaire
+		//sendProject(fileInput.files[0], titleInput.value, categorySelect.value);
+	});
+}
+
+function sendProject(img, title, category) {
+	request = {
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: {
+			"id": getData("works").length,
+			"title": title,
+			"imageUrl": img,
+			"category": category,
+			"userId":
+		}
+	}
+}
