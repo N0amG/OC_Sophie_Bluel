@@ -1,5 +1,5 @@
-import { displayProjects, getAllCategories } from "./display.js";
-import { sendRequest, getData } from "./utils/api.js";
+import { displayProjects } from "./display.js";
+import { sendRequest } from "./utils/api.js";
 
 function displayModal(html, parent) {
 	let overlay = document.getElementById("overlay");
@@ -46,18 +46,17 @@ function displayGalleryModal() {
 	displayModal(html, ".gallery-modal");
 	document.querySelector(".add-button").addEventListener("click", addProjectModal);
 
-	displayProjects(".gallery-modal").then(() => {
-		const galleryModal = document.querySelector(".gallery-modal");
-		const children = Array.from(galleryModal.children);
-		children.forEach(child => {
-			const trash = child.querySelector(".fa-trash-can");
-			if (trash) {
-				trash.addEventListener("click", () => {
-					const projectId = child.classList[0].split('-').pop();
-					deleteProject(projectId);
-				})
-			}
-		});
+	displayProjects(".gallery-modal")
+	const galleryModal = document.querySelector(".gallery-modal");
+	const children = Array.from(galleryModal.children);
+	children.forEach(child => {
+		const trash = child.querySelector(".fa-trash-can");
+		if (trash) {
+			trash.addEventListener("click", () => {
+				const projectId = child.classList[0].split('-').pop();
+				deleteProject(projectId);
+			})
+		}
 	});
 }
 
@@ -71,16 +70,20 @@ function deleteProject(id = "") {
 			'Authorization': `Bearer ${localStorage.getItem("authToken")}`
 		}
 	}
-	sendRequest(`works/${id}`, request).then(() => {
+	sendRequest(`works/${id}`, request).then((response) => {
 		let displayReload = false;
+		let projects = JSON.parse(localStorage.getItem("projets"));
 		document.querySelectorAll(`.project-${id}`).forEach(project => {
 			if (project.parentNode.childElementCount === 1)
 				displayReload = true;
-			project.parentNode.removeChild(project)
-		})
+			project.parentNode.removeChild(project);
+			projects = projects.filter(p => p.id !== id);
+		});
+		localStorage.setItem("projets", JSON.stringify(projects));
+		// Si la galerie est vide, on recharge pour afficher le message d'information
 		if (displayReload) {
-			displayProjects(".gallery")
-			displayProjects(".gallery-modal")
+			displayProjects(".gallery");
+			displayProjects(".gallery-modal");
 		}
 	}).catch((response) => {
 		return Error(`Erreur: ${response.status} ${response.statusText}`);
@@ -125,15 +128,15 @@ function addProjectModal() {
 						</div>
 						<div>
 							<label class="form-label" for="photo-title">Titre</label>
-							<input type="text" id="photo-title" value="Naraku">
+							<input type="text" id="photo-title">
 						</div>
 						<div>
 							<label class="form-label" for="photo-category">Catégorie</label>
 							<div class="select-container">
 								<i class="fa-solid fa-chevron-down"></i>
 								<select id="photo-category">
-									<option value="Objets" selected>Objets</option>
-									<option value="" disabled ></option>
+									<option value="" disabled selected></option>
+									<option value="Objets">Objets</option>
 									<option value="Appartements">Appartements</option>
 									<option value="Hotels & restaurants">Hotels & restaurants</option>
 								</select>
@@ -148,7 +151,7 @@ function addProjectModal() {
 
 	displayModal(html);
 	imgPreview();
-	checkFormValidity();
+	verifyAndAddProject();
 }
 
 function imgPreview() {
@@ -193,7 +196,7 @@ function imgPreview() {
 	});
 }
 
-function checkFormValidity() {
+function verifyAndAddProject() {
 	const fileInput = document.getElementById("photo-upload");
 	const titleInput = document.getElementById("photo-title");
 	const categorySelect = document.getElementById("photo-category");
@@ -208,6 +211,7 @@ function checkFormValidity() {
 
 		validateButton.disabled = !(isFileValid && isTitleValid && isCategoryValid);
 	}
+	// Vérification des champs avant l'envoi du formulaire
 	fileInput.addEventListener("change", updateValidateButtonState);
 	titleInput.addEventListener("input", updateValidateButtonState);
 	categorySelect.addEventListener("change", updateValidateButtonState);
@@ -219,28 +223,27 @@ function checkFormValidity() {
 }
 
 async function sendProject(file, title, category) {
-    try {
-        const allCategories = await getAllCategories();
-        const categoryId = allCategories[category];
+	try {
+		const allCategories = JSON.parse(localStorage.getItem("categories"));
+		const categoryId = allCategories[category];
 
-        const formData = new FormData();
-		console.log("formData", formData);
-        formData.append("title", title);
-        formData.append("image", file);
-        formData.append("category", categoryId);
+		const formData = new FormData();
+		formData.append("title", title);
+		formData.append("image", file);
+		formData.append("category", categoryId);
 
-        const request = {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
-            },
-            body: formData
-        };
-
-        console.log("Requête envoyée :", request);
-        const response = await sendRequest("works", request);
-        console.log("Projet ajouté avec succès:", response);
-    } catch (error) {
-        console.error("Erreur lors de l'ajout du projet:", error);
-    }
+		const request = {
+			method: "POST",
+			headers: {
+				"Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+			},
+			body: formData
+		};
+		const response = await sendRequest("works", request);
+		// Ajouter le projet au local storage
+		localStorage.setItem("projets", JSON.stringify([...JSON.parse(localStorage.getItem("projets")), response]));
+		// ( Actualisation de la galerie probabement a cause de l'extension Live Server )
+	} catch (error) {
+		console.error("Erreur lors de l'ajout du projet:", error);
+	}
 }

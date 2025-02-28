@@ -1,9 +1,10 @@
 import { getData } from "./utils/api.js";
 
 // Récupère les données des projets via l'API
-async function getProjectsData() {
+async function storeProjects() {
 	const data = await getData("works");
-	return data;
+	// Stocker les données dans le local storage
+	localStorage.setItem("projets", JSON.stringify(data));
 }
 
 // Retourne le code HTML d'un projet
@@ -30,8 +31,8 @@ const noProjectsMessage = '<span class="no-projects">Aucun projets<span>';
 const noDatabaseMessage = "<span class='no-projects'>Erreur de connexion à la base de données<span>";
 
 // Retourne le code HTML de tous les projets en fonction de la catégorie
-async function returnAllProjects(category, gallery) {
-	let projects = await getProjectsData();
+function returnAllProjects(category, gallery) {
+	let projects = JSON.parse(localStorage.getItem("projets"));
 	let html = '';
 	projects.forEach(project => {
 		if (category.toLowerCase().trim() === "tous" || project.category.name === category.trim()) {
@@ -43,9 +44,9 @@ async function returnAllProjects(category, gallery) {
 	return html;
 }
 
-export async function displayProjects(gallery, category = "Tous") {
+export function displayProjects(gallery, category = "Tous") {
 	try {
-		let html = await returnAllProjects(category, gallery);
+		let html = returnAllProjects(category, gallery);
 		document.querySelector(gallery).innerHTML = html;
 		return true;
 	} catch (error) {
@@ -56,18 +57,18 @@ export async function displayProjects(gallery, category = "Tous") {
 
 // Gestions des filtres
 let currentCategory = "Tous";
-export async function getAllCategories() {
+export async function storeCategories() {
 	let categories = { "Tous": "Tous" };
 	const data = await getData("categories");
 	data.forEach(category => {
 		categories[category.name] = category.id;
 	});
-	return categories;
+	localStorage.setItem("categories", JSON.stringify(categories));
 }
 
 // Génère les boutons de filtres
-async function generateFilters() {
-	let categories = await getAllCategories();
+function generateFilters() {
+	let categories = JSON.parse(localStorage.getItem("categories"));
 	const portfolio = document.querySelector("#portfolio");
 	const gallery = document.querySelector(".gallery");
 	let ul = document.createElement("ul");
@@ -88,24 +89,25 @@ async function generateFilters() {
 }
 
 // Gestion des boutons filtres et de l'affichage des projets en conséquence
-async function filterManager() {
-	generateFilters().then(() => {
+function filterManager() {
+	generateFilters()
 
-		let filtersButtons = document.querySelectorAll(".filter-button");
-		filtersButtons.forEach(button => {
-			button.addEventListener("click", async () => {
-				filtersButtons.forEach(button => button.classList.remove("active"));
-				button.classList.add("active");
-				currentCategory = button.textContent;
-				displayProjects(".gallery", currentCategory);
-			});
+	let filtersButtons = document.querySelectorAll(".filter-button");
+	filtersButtons.forEach(button => {
+		button.addEventListener("click", () => {
+			filtersButtons.forEach(button => button.classList.remove("active"));
+			button.classList.add("active");
+			currentCategory = button.textContent;
+			displayProjects(".gallery", currentCategory);
 		});
 	});
+
 }
 
 // Affiche la page d'accueil en fonction de la connexion de l'utilisateur
 function display() {
 	// Afficher le mode d'édition si l'utilisateur est connecté
+	displayProjects(".gallery");
 	if (localStorage.getItem("authToken")) {
 		document.querySelector(".edit-banner").classList.remove("no-display");
 		document.querySelector(".login").parentElement.remove();
@@ -128,5 +130,7 @@ function display() {
 	}
 }
 
-displayProjects(".gallery");
-display();  
+// Attendre que le local storage soit a jour avant d'afficher le site
+storeProjects().then(() => display());
+storeCategories();
+
