@@ -226,7 +226,7 @@ function sendProject(img, title, category) {
 			"title": title,
 			"imageUrl": img,
 			"category": category,
-			"userId":
+			"userId": localStorage.getItem("authToken").userId
 		}
 	}
 }
