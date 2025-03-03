@@ -1,13 +1,11 @@
-main {
+main, #login-section, form, form div {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 100px 0 300px 0;
 }
 
-#login-section, form, form div {
-    display: flex;
-    flex-direction: column;
+main {
+    justify-content: space-between;
+    padding: 100px 0 300px 0;
 }
 
 #login-section {

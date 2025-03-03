@@ -70,7 +70,7 @@ function deleteProject(id = "") {
 			'Authorization': `Bearer ${localStorage.getItem("authToken")}`
 		}
 	}
-	sendRequest(`works/${id}`, request).then((response) => {
+	sendRequest(`works/${id}`, request).then(() => {
 		let displayReload = false;
 		let projects = JSON.parse(localStorage.getItem("projets"));
 		document.querySelectorAll(`.project-${id}`).forEach(project => {
@@ -177,7 +177,7 @@ function imgPreview() {
 			};
 			reader.readAsDataURL(file);
 
-			// Met à jour la zone de prévisualisation sans supprimer les éléments
+			// Met à jour la zone de prévisualisation
 			const uploadPreview = document.querySelector(".upload-label");
 			uploadPreview.innerHTML = "";
 			uploadPreview.appendChild(fileInput);
@@ -241,7 +241,6 @@ async function sendProject(file, title, category) {
 		const response = await sendRequest("works", request);
 		// Ajouter le projet au local storage
 		localStorage.setItem("projets", JSON.stringify([...JSON.parse(localStorage.getItem("projets")), response]));
-		// ( Actualisation de la galerie probabement a cause de l'extension Live Server )
 	} catch (error) {
 		console.error("Erreur lors de l'ajout du projet:", error);
 	}

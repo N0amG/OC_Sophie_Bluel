@@ -1,5 +1,5 @@
 
-if (document.URL.includes("index.html") || document.URL.endsWith("FrontEnd/")) {
+if (document.URL.endsWith("index.html") || document.URL.endsWith("FrontEnd/")) {
     // Afficher les projets si on se trouve sur la page d'accueil
     import("./display.js");
 }

@@ -28,7 +28,7 @@ function returnOneProject(project, gallery) {
 }
 
 const noProjectsMessage = '<span class="no-projects">Aucun projets<span>';
-const noDatabaseMessage = "<span class='no-projects'>Erreur de connexion à la base de données<span>";
+const noDatabaseMessage = '<span class="no-projects">Erreur de connexion à la base de données<span>';
 
 // Retourne le code HTML de tous les projets en fonction de la catégorie
 function returnAllProjects(category, gallery) {
@@ -57,7 +57,7 @@ export function displayProjects(gallery, category = "Tous") {
 
 // Gestions des filtres
 let currentCategory = "Tous";
-export async function storeCategories() {
+async function storeCategories() {
 	let categories = { "Tous": "Tous" };
 	const data = await getData("categories");
 	data.forEach(category => {
