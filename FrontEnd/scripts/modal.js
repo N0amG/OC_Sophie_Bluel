@@ -140,7 +140,6 @@ function addProjectModal() {
 									<option value="Appartements">Appartements</option>
 									<option value="Hotels & restaurants">Hotels & restaurants</option>
 								</select>
-
 							</div>
 						</div>
 					</div>
@@ -189,9 +188,9 @@ function imgPreview() {
 			// Affiche le message d'erreur sans supprimer les autres éléments
 			const uploadSection = document.querySelector(".upload-label");
 			if (file.size > 4 * 1024 * 1024)
-				uploadSection.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Fichier trop volumineux</span>`);
+				uploadSection.parentElement.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Fichier trop volumineux</span>`);
 			else
-				uploadSection.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Type de fichier invalide</span>`);
+				uploadSection.parentElement.insertAdjacentHTML("beforeend", `<span class="error ${shake}">Type de fichier invalide</span>`);
 		}
 	});
 }
