@@ -173,11 +173,16 @@ li:hover, a:hover {
 	grid-template-columns: 1fr 1fr 1fr;
 	grid-column-gap: 20px;
 	grid-row-gap: 20px;
+
 }
 
 .gallery img, #nav-container {
 	width: 100%;
+}
 
+.gallery img {
+	object-fit: cover;
+	height: 490px;
 }
 
 #contact {
@@ -361,6 +366,7 @@ a {
     width: 76px;
     height: 102px;
     position: relative;
+	object-fit: cover;
 }
 
 .fa-trash-can {
