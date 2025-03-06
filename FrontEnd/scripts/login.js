@@ -10,7 +10,11 @@ form.addEventListener("submit", async (event) => {
     const username = formData.get("username");
     const password = formData.get("password");
 
-    loginRequest(username, password);
+    // Vérifier si les champs sont remplis et envoyer la requête
+    if (username.trim() && password.trim())
+        loginRequest(username, password);
+    else 
+        printLoginError();
 });
 
 
@@ -38,7 +42,6 @@ function loginRequest(username, password) {
         window.location = "../index.html";
     })
         .catch(error => {
-            console.error(error);
             printLoginError();
             return error;
         });

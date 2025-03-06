@@ -320,7 +320,6 @@ a {
 .modal {
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
     background: white;
     width: 630px;
 	height: 610px;
@@ -501,7 +500,7 @@ input, #photo-category {
 	border: none;
 	width: 50%;
 	padding: 10px 50px;
-	margin: 32px 90px;
+	margin: 32px 90px 10px 90px;
 	background-color: #A7A7A7;
 	color: white;
 	border-radius: 60px;
@@ -523,12 +522,16 @@ input, #photo-category {
 	width: 30%;
 }
 
-.error {
+.error, .success {
     align-self: center;
     color: red;
     font-weight: bold;
 	font-size: 14px;
 	margin: 5px 0 10px 0;
+}
+
+.success {
+	color: green;
 }
 
 @keyframes shake {
@@ -537,4 +540,4 @@ input, #photo-category {
     50% { transform: translateX(5px); }
     75% { transform: translateX(-5px); }
 }
-.error.shake { animation: shake 0.5s; }
+.error.shake, .success.shake { animation: shake 0.5s; }

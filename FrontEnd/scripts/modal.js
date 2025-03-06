@@ -1,4 +1,4 @@
-import { displayProjects } from "./display.js";
+import { displayProjects, storeProjects } from "./display.js";
 import { sendRequest } from "./utils/api.js";
 
 function displayModal(html, parent) {
@@ -77,8 +77,8 @@ function deleteProject(id = "") {
 			if (project.parentNode.childElementCount === 1)
 				displayReload = true;
 			project.parentNode.removeChild(project);
-			projects = projects.filter(p => p.id !== id);
 		});
+		projects = projects.filter(project => project.id !== Number(id));
 		localStorage.setItem("projets", JSON.stringify(projects));
 		// Si la galerie est vide, on recharge pour afficher le message d'information
 		if (displayReload) {
@@ -223,6 +223,12 @@ function verifyAndAddProject() {
 
 async function sendProject(file, title, category) {
 	try {
+		if (!file || !title.trim() || !category.trim()) {
+			throw new Error("Veuillez remplir tous les champs");
+		}
+		const error = document.querySelector(".error")
+		if (error)
+			error.remove();
 		const allCategories = JSON.parse(localStorage.getItem("categories"));
 		const categoryId = allCategories[category];
 
@@ -239,9 +245,37 @@ async function sendProject(file, title, category) {
 			body: formData
 		};
 		const response = await sendRequest("works", request);
-		// Ajouter le projet au local storage
-		localStorage.setItem("projets", JSON.stringify([...JSON.parse(localStorage.getItem("projets")), response]));
+		// Actualision du local storage
+		storeProjects().then(() => {
+			// Actualisation de la galerie après l'ajout du projet dans local storage
+			displayProjects(".gallery");
+		});
+
+		// Afficher le message de succès
+		let shake = "";
+		const modal = document.querySelector(".modal");
+		const existingSuccess = document.querySelector(".success");
+		if (existingSuccess) {
+			existingSuccess.remove();
+			shake = "shake";
+		}
+		modal.insertAdjacentHTML("beforeend", `<span class="success ${shake}">Projet ajouté avec succès</span>`);
+
 	} catch (error) {
-		console.error("Erreur lors de l'ajout du projet:", error);
+		// Retirer le message de succes s'il y en a un
+		const existingSuccess = document.querySelector(".success");
+		if (existingSuccess) {
+			existingSuccess.remove();
+		}
+
+		// Afficher le message d'erreur
+		let shake = "";
+		const modal = document.querySelector(".modal");
+		const existingError = document.querySelector(".error");
+		if (existingError) {
+			existingError.remove();
+			shake = "shake";
+		}
+		modal.insertAdjacentHTML("beforeend", `<span class="error ${shake}">${error.message}</span>`);
 	}
 }

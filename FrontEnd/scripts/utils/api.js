@@ -4,11 +4,10 @@ export async function getData(endpoint) {
 	try {
 		const response = await fetch(`${API_URL}/${endpoint}`);
 		if (!response.ok) {
-			throw new Error(`Erreur: ${response.status} ${response.statusText}`);
+			return new Error(`Erreur: ${response.status} ${response.statusText}`);
 		}
 		return response.json();
 	} catch (error) {
-		console.error("Erreur lors de la récupération des données :", error);
 		return null;
 	}
 }
@@ -18,7 +17,7 @@ export async function sendRequest(endpoint, request) {
 		const response = await fetch(`${API_URL}/${endpoint}`, request);
 
 		if (!response.ok) {
-			throw new Error('Erreur de connexion');
+			return new Error('Erreur de connexion');
 		}
 		let data;
 		if (request.headers['Content-Type'] === "application/json") {
@@ -30,7 +29,6 @@ export async function sendRequest(endpoint, request) {
 		return data;
 
 	} catch (error) {
-		console.error(error);
 		return error;
 	}
 }

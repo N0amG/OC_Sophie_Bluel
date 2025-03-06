@@ -1,7 +1,7 @@
 import { getData } from "./utils/api.js";
 
 // Récupère les données des projets via l'API
-async function storeProjects() {
+export async function storeProjects() {
 	const data = await getData("works");
 	// Stocker les données dans le local storage
 	localStorage.setItem("projets", JSON.stringify(data));
